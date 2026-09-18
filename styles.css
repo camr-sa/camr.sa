@@ -199,6 +199,7 @@ button { font: inherit; }
   .project-pair .offset { margin-top:0; }
   .project-image img, .project-image.portrait img { aspect-ratio:4/5; }
   .project-image.cinematic img { aspect-ratio:4/3; }
+  .project-floors .project-image img { aspect-ratio:auto; max-height:78vh; }
   .project-info, .project-info.horizontal { grid-template-columns:1fr; gap:8px; }
   .project-info > span, .project-info.horizontal > span { grid-column:auto; margin:8px 0 0; justify-self:start; }
   .project-info h3 { font-size:30px; }
