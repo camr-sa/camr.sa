@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://camr.sa/sitemap.xml
