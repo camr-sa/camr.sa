@@ -191,6 +191,12 @@ button { font: inherit; }
   .site-header.menu-open .primary-nav a:nth-child(3) { transition-delay:.18s; }
   .site-header.menu-open .primary-nav a:nth-child(4) { transition-delay:.23s; }
   .site-header.menu-open .primary-nav a:nth-child(5) { transition-delay:.28s; }
+  .nav-contact { margin-top:36px; padding-top:26px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:16px; }
+  .nav-contact a { font-size:16px; line-height:1.4; letter-spacing:.01em; opacity:.8; }
+  .nav-contact a:hover { opacity:1; }
+  .site-header.menu-open .nav-contact a { opacity:1; }
+  .site-header.menu-open .nav-contact a:nth-child(1) { transition-delay:.33s; }
+  .site-header.menu-open .nav-contact a:nth-child(2) { transition-delay:.38s; }
   .site-header.menu-open { color:var(--ink); }
   .site-header.menu-open .brand .logo-white { display:none; }
   .site-header.menu-open .brand .logo-black { display:block; }
