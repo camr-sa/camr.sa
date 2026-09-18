@@ -197,7 +197,7 @@ button { font: inherit; }
   .site-header.menu-open .nav-contact a { opacity:1; }
   .site-header.menu-open .nav-contact a:nth-child(1) { transition-delay:.33s; }
   .site-header.menu-open .nav-contact a:nth-child(2) { transition-delay:.38s; }
-  .site-header.menu-open { color:var(--ink); }
+  .site-header.menu-open { color:var(--ink); background:transparent; border-color:transparent; backdrop-filter:none; }
   .site-header.menu-open .brand .logo-white { display:none; }
   .site-header.menu-open .brand .logo-black { display:block; }
   .hero-content { padding-bottom:118px; }
