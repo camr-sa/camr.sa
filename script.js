@@ -6,16 +6,19 @@ const syncHeader = () => header.classList.toggle('is-scrolled', window.scrollY >
 syncHeader();
 window.addEventListener('scroll', syncHeader, { passive: true });
 
-menuButton.addEventListener('click', () => {
-  const open = header.classList.toggle('menu-open');
+const menuLabel = document.querySelector('#menu-toggle-label');
+
+const setMenu = open => {
+  header.classList.toggle('menu-open', open);
   menuButton.setAttribute('aria-expanded', String(open));
+  menuLabel.textContent = open ? 'Close menu' : 'Open menu';
   document.body.style.overflow = open ? 'hidden' : '';
-});
-nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-  header.classList.remove('menu-open');
-  menuButton.setAttribute('aria-expanded', 'false');
-  document.body.style.overflow = '';
-}));
+  if (!open) menuButton.focus({ preventScroll: true });
+};
+
+menuButton.addEventListener('click', () => setMenu(!header.classList.contains('menu-open')));
+nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && header.classList.contains('menu-open')) setMenu(false); });
 
 const slides = [...document.querySelectorAll('.hero-slide')];
 const counter = document.querySelector('#slide-current');

@@ -82,15 +82,20 @@
     </a>
 
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
-      <span></span><span></span>
-      <span class="sr-only">Toggle navigation</span>
+      <span class="menu-lines" aria-hidden="true"><i></i><i></i></span>
+      <span class="sr-only" id="menu-toggle-label">Open menu</span>
     </button>
 
     <nav id="primary-nav" class="primary-nav" aria-label="Primary navigation">
       <a href="#projects">Projects</a>
       <a href="#studio">Studio</a>
       <a href="#services">Services</a>
+      <a href="#interiors">Interiors</a>
       <a href="#contact">Contact</a>
+      <div class="nav-contact" aria-label="Contact details">
+        <a href="mailto:info@camr.sa">info@camr.sa</a>
+        <a href="tel:+966554509092">+966 55 450 9092</a>
+      </div>
     </nav>
   </header>
 
