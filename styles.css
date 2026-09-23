@@ -49,6 +49,7 @@ button { font: inherit; }
 .brand-text b { font-size: 14px; font-weight: 650; }
 .brand-text small { font-size: 8px; letter-spacing: .32em; margin-top: 4px; opacity: .75; }
 .primary-nav { display: flex; align-items: center; gap: 35px; font-size: 12px; letter-spacing: .11em; text-transform: uppercase; }
+.nav-contact { display: none; }
 .primary-nav a { text-decoration: none; position: relative; }
 .primary-nav a::after { content:""; position:absolute; left:0; right:100%; bottom:-7px; height:1px; background:currentColor; transition:right .25s; }
 .primary-nav a:hover::after { right:0; }
@@ -163,6 +164,9 @@ button { font: inherit; }
   :root { --shell: min(100% - 44px, 900px); }
   .section { padding-block:100px; }
   .site-header { padding-inline:22px; }
+  .contact-map { margin-top: 44px; }
+  .contact-map iframe { height: 340px; }
+
   .intro-grid, .services-head, .contact-grid { grid-template-columns:1fr; gap:44px; }
   .principles { grid-template-columns:repeat(2,1fr); gap:22px; }
   .project-pair { gap:28px; }
@@ -197,6 +201,7 @@ button { font: inherit; }
   .site-header.menu-open .nav-contact a { opacity:1; }
   .site-header.menu-open .nav-contact a:nth-child(1) { transition-delay:.33s; }
   .site-header.menu-open .nav-contact a:nth-child(2) { transition-delay:.38s; }
+  .site-header.menu-open .nav-contact a:nth-child(3) { transition-delay:.43s; }
   .site-header.menu-open { color:var(--ink); background:transparent; border-color:transparent; backdrop-filter:none; }
   .site-header.menu-open .brand .logo-white { display:none; }
   .site-header.menu-open .brand .logo-black { display:block; }
@@ -248,4 +253,15 @@ button { font: inherit; }
   text-decoration: none;
   border-bottom: 1px solid currentColor;
   padding-bottom: 0.15rem;
+}
+
+.contact-map { margin-top: 70px; position: relative; }
+.contact-map iframe {
+  width:100%; height:420px; border:0; display:block;
+  filter: grayscale(1) invert(.92) contrast(.86) brightness(.92) sepia(.25) hue-rotate(180deg) saturate(.4);
+}
+.contact-map::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background: rgba(20,19,15,.14);
+  mix-blend-mode: multiply;
 }
