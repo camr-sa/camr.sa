@@ -1,0 +1,28 @@
+name: IndexNow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Submit changed pages to IndexNow
+        run: python3 .github/scripts/indexnow_submit.py
+        env:
+          INDEXNOW_HOST: camr.sa
+          INDEXNOW_KEY_FILE: ${{ github.workspace }}/f66437307ab5d328f718931a6b695487.txt
+          INDEXNOW_EVENT_BEFORE: ${{ github.event.before }}
+          INDEXNOW_EVENT_NAME: ${{ github.event_name }}
+          INDEXNOW_SHA: ${{ github.sha }}
+          INDEXNOW_WORKFLOW_FILE: .github/workflows/indexnow.yml
