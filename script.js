@@ -7,16 +7,21 @@ const syncHeader = () => header.classList.toggle('is-scrolled', window.scrollY >
 syncHeader();
 window.addEventListener('scroll', syncHeader, { passive: true });
 const menuLabel = document.querySelector('#menu-toggle-label');
+const isArabic = document.documentElement.lang === 'ar';
 const setMenu = open => {
-header.classList.toggle('menu-open', open);
-menuButton.setAttribute('aria-expanded', String(open));
-menuLabel.textContent = open ? 'Close menu' : 'Open menu';
-document.body.style.overflow = open ? 'hidden' : '';
-if (!open) menuButton.focus({ preventScroll: true });
+  header.classList.toggle('menu-open', open);
+  menuButton.setAttribute('aria-expanded', String(open));
+  menuLabel.textContent = open ? (isArabic ? 'إغلاق القائمة' : 'Close menu') : (isArabic ? 'فتح القائمة' : 'Open menu');
+  document.body.style.overflow = open ? 'hidden' : '';
+  if (!open) menuButton.focus({ preventScroll: true });
 };
 menuButton.addEventListener('click', () => setMenu(!header.classList.contains('menu-open')));
 nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && header.classList.contains('menu-open')) setMenu(false); });
+const langSwitch = document.querySelector('.nav-lang');
+if (langSwitch) langSwitch.addEventListener('click', e => {
+  if (location.hash) { e.preventDefault(); const target = langSwitch.getAttribute('href'); location.href = target + location.hash; }
+});
 const slides = [...document.querySelectorAll('.hero-slide')];
 const counter = document.querySelector('#slide-current');
 let active = 0;
