@@ -27,10 +27,14 @@ const counter = document.querySelector('#slide-current');
 let active = 0;
 const deferredImgs = document.querySelectorAll('img[data-src]');
 const loadDeferred = () => deferredImgs.forEach(img => { img.src = img.dataset.src; });
+const scheduleDeferred = () => {
+  if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(loadDeferred);
+  else setTimeout(loadDeferred, 200);
+};
 if (document.readyState === 'loading') {
-document.addEventListener('DOMContentLoaded', () => requestIdleCallback ? requestIdleCallback(loadDeferred) : setTimeout(loadDeferred, 200));
+  document.addEventListener('DOMContentLoaded', scheduleDeferred);
 } else {
-loadDeferred();
+  scheduleDeferred();
 }
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 setInterval(() => {
