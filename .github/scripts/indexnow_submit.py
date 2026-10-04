@@ -72,12 +72,17 @@ def git_diff_names(before, after):
     return status_by_path
 
 
+NON_INDEXABLE_HTML = {"404.html", "404.htm"}
+
+
 def changed_html_paths(status_by_path):
     html_paths = []
     for path, status in status_by_path.items():
         if status.startswith("D"):
             continue
         if path.endswith(".html") or path.endswith(".htm"):
+            if path.replace("\\", "/").split("/")[-1] in NON_INDEXABLE_HTML:
+                continue
             html_paths.append(path)
     return html_paths
 
