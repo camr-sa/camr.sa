@@ -1,5 +1,3 @@
-if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-window.scrollTo({ top: 0, behavior: 'instant' });
 const header = document.querySelector('.site-header');
 const menuButton = document.querySelector('.menu-toggle');
 const nav = document.querySelector('.primary-nav');
@@ -26,7 +24,10 @@ const slides = [...document.querySelectorAll('.hero-slide')];
 const counter = document.querySelector('#slide-current');
 let active = 0;
 const deferredImgs = document.querySelectorAll('img[data-src]');
-const loadDeferred = () => deferredImgs.forEach(img => { img.src = img.dataset.src; });
+const loadDeferred = () => deferredImgs.forEach(img => {
+  if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+  img.src = img.dataset.src;
+});
 const scheduleDeferred = () => {
   if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(loadDeferred);
   else setTimeout(loadDeferred, 200);
@@ -54,6 +55,8 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 const dialog = document.querySelector('#lightbox');
 const dialogImg = dialog.querySelector('img');
 document.querySelectorAll('[data-lightbox]').forEach(button => button.addEventListener('click', () => {
+const sourceImg = button.querySelector('img');
+if (sourceImg && sourceImg.alt) dialogImg.alt = sourceImg.alt;
 dialogImg.src = button.dataset.lightbox;
 dialog.showModal();
 }));
