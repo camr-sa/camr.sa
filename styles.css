@@ -92,7 +92,10 @@
 .fab-wrapper{transition:opacity .25s ease;}
 body.menu-open .fab-wrapper{opacity:0;pointer-events:none;}
 @media (max-width:720px){
-  .primary-nav .nav-lang,[dir="rtl"] .primary-nav .nav-lang{font-size:16px;}
+  /* Language link matches the contact links below it */
+  .primary-nav .nav-lang,[dir="rtl"] .primary-nav .nav-lang{font-size:16px;line-height:1.4;letter-spacing:.01em;}
+  /* Arabic script looks smaller than Latin at the same px size: use the site's Arabic font and size it up to match optically */
+  .primary-nav .nav-lang:lang(ar){font-family:"IBM Plex Sans Arabic",var(--studio-font);font-size:18px;letter-spacing:0;}
 }
 
 /* Desktops can't place calls: keep only WhatsApp */
