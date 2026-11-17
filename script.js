@@ -11,6 +11,7 @@ const setMenu = open => {
   menuButton.setAttribute('aria-expanded', String(open));
   menuLabel.textContent = open ? (isArabic ? 'إغلاق القائمة' : 'Close menu') : (isArabic ? 'فتح القائمة' : 'Open menu');
   document.body.style.overflow = open ? 'hidden' : '';
+  document.body.classList.toggle('menu-open', open);
   if (!open) menuButton.focus({ preventScroll: true });
 };
 menuButton.addEventListener('click', () => setMenu(!header.classList.contains('menu-open')));
@@ -37,14 +38,28 @@ if (document.readyState === 'loading') {
 } else {
   scheduleDeferred();
 }
-if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-setInterval(() => {
-slides[active].classList.remove('is-active');
-active = (active + 1) % slides.length;
-slides[active].classList.add('is-active');
-counter.textContent = String(active + 1).padStart(2, '0');
-}, 5200);
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let sliderTimer = null;
+let heroHovered = false;
+const nextSlide = () => {
+  slides[active].classList.remove('is-active');
+  active = (active + 1) % slides.length;
+  slides[active].classList.add('is-active');
+  counter.textContent = String(active + 1).padStart(2, '0');
+};
+const startSlider = () => {
+  if (reduceMotion || sliderTimer || document.hidden || heroHovered || slides.length < 2) return;
+  sliderTimer = setInterval(nextSlide, 5200);
+};
+const stopSlider = () => { clearInterval(sliderTimer); sliderTimer = null; };
+// Pause while the tab is hidden and while a mouse hovers the hero (desktop).
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopSlider(); else startSlider(); });
+const hero = document.querySelector('.hero');
+if (hero) {
+  hero.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { heroHovered = true; stopSlider(); } });
+  hero.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') { heroHovered = false; startSlider(); } });
 }
+startSlider();
 const observer = new IntersectionObserver(entries => {
 for (const entry of entries) if (entry.isIntersecting) {
 entry.target.classList.add('is-visible');
