@@ -22,6 +22,8 @@ The site is configured with:
 
 - `index.html` – English page (default, canonical `/`)
 - `ar/index.html` – Arabic (Saudi/Najdi localization, RTL) served at `/ar/`
+- `privacy/index.html`, `ar/privacy/index.html` – privacy notice (Google Analytics cookies,
+  opt-out), linked from both footers
 - `404.html` – standalone not-found page (absolute asset paths so it works at any URL)
 - `styles.css` – the single shared stylesheet for both pages. The base rules are the
   English layout; Arabic overrides live at the end of the file and every one is

@@ -68,3 +68,22 @@
   [dir="rtl"] .hero h1{font-size:clamp(49px,15.5vw,80px);}
   [dir="rtl"] .fab-wrapper{right:auto;left:16px;}
 }
+
+/* Privacy notice pages (/privacy/, /ar/privacy/) */
+.legal-header{display:flex;align-items:center;justify-content:space-between;min-height:86px;border-bottom:1px solid var(--line);}
+.legal-lang{font-size:12px;letter-spacing:.08em;text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:2px;}
+.legal{max-width:760px;padding-block:90px 110px;}
+.legal h1{margin:0;font-family:var(--studio-font);font-size:clamp(42px,6vw,72px);font-weight:400;line-height:1.1;letter-spacing:-.04em;}
+.legal-updated{margin:26px 0 56px;font-size:12px;letter-spacing:.06em;color:var(--muted);}
+.legal h2{margin:48px 0 14px;font-family:var(--studio-font);font-size:24px;font-weight:500;letter-spacing:-.01em;}
+.legal p,.legal li{font-size:16px;line-height:1.75;color:#4d4a43;}
+.legal p{margin:0 0 16px;}
+.legal ul{margin:0 0 16px;padding-inline-start:22px;}
+.legal a{text-underline-offset:3px;}
+.legal code{font-size:14px;background:var(--paper-deep);padding:1px 6px;}
+.site-footer p a{text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:1px;}
+@media (min-width:721px){main + .site-footer{padding-inline-end:84px;}}
+@media (max-width:720px){.legal-header{min-height:72px;}.legal{padding-block:60px 80px;}.legal h2{font-size:21px;}.legal p,.legal li{font-size:15px;}}
+[dir="rtl"] .legal h1,[dir="rtl"] .legal h2,[dir="rtl"] .legal-lang,[dir="rtl"] .legal-updated{letter-spacing:0;}
+[dir="rtl"] .legal h1{line-height:1.2;}
+[dir="rtl"] .legal p,[dir="rtl"] .legal li{line-height:1.9;}
