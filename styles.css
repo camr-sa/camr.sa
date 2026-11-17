@@ -115,3 +115,8 @@ body.menu-open .fab-wrapper{opacity:0;pointer-events:none;}
    splits them apart in Safari. Applies to the whole Arabic page and to Arabic
    links on English pages (lang="ar"). */
 :lang(ar){letter-spacing:0 !important;}
+
+/* Map: dark placeholder (same tone as the styled map) until the embed has loaded */
+.contact-map{background:#2b2a27;}
+.js .contact-map iframe{opacity:0;transition:opacity .6s ease;}
+.js .contact-map.is-loaded iframe{opacity:1;}

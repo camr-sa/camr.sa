@@ -78,4 +78,28 @@ dialog.showModal();
 dialog.querySelector('.lightbox-close').addEventListener('click', () => dialog.close());
 dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && dialog.open) dialog.close(); });
-document.querySelector('#year').textContent = new Date().getFullYear();
+document.querySelector('#year').textContent = new Date().getFullYear();// Google Maps embed: start loading in the background once the page has
+// finished loading (or earlier if the visitor scrolls toward it), so the map
+// is ready by the time they reach the contact section.
+const mapFrame = document.querySelector('.contact-map iframe[data-src]');
+if (mapFrame) {
+  let mapStarted = false;
+  const loadMap = () => {
+    if (mapStarted) return;
+    mapStarted = true;
+    mapFrame.addEventListener('load', () => mapFrame.parentElement.classList.add('is-loaded'), { once: true });
+    mapFrame.src = mapFrame.dataset.src;
+  };
+  const loadWhenIdle = () => {
+    if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(loadMap, { timeout: 2500 });
+    else setTimeout(loadMap, 1200);
+  };
+  if (document.readyState === 'complete') loadWhenIdle();
+  else window.addEventListener('load', loadWhenIdle, { once: true });
+  if ('IntersectionObserver' in window) {
+    const mapObserver = new IntersectionObserver(entries => {
+      if (entries.some(e => e.isIntersecting)) { mapObserver.disconnect(); loadMap(); }
+    }, { rootMargin: '1200px 0px' });
+    mapObserver.observe(mapFrame);
+  }
+}
