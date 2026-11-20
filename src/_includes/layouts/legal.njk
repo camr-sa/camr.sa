@@ -1,0 +1,32 @@
+{%- set home = "/ar/" if lang == "ar" else "/" -%}
+<!doctype html>
+<html lang="{{ lang }}"{% if lang == "ar" %} dir="rtl"{% endif %}>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="content-language" content="{{ lang }}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#11100d" />
+  <meta name="description" content="{{ description }}" />
+  <meta name="robots" content="index, follow" />
+  <title>{{ title }} | {{ t.meta.siteName }}</title>
+{% include "partials/head-links.njk" %}
+{% include "partials/font-preload.njk" %}
+  <link rel="stylesheet" href="{{ '/styles.css' | versioned }}" />
+</head>
+<body class="legal-page">
+  <header class="legal-header shell">
+    <a class="footer-brand" href="{{ home }}">{{ t.brand.name }} <span>{{ t.brand.tag }}</span></a>
+    <a class="legal-lang" href="{{ enPath if lang == 'ar' else arPath }}" hreflang="{{ t.otherLang.code }}" lang="{{ t.otherLang.code }}">{{ t.otherLang.label }}</a>
+  </header>
+
+  <main class="legal shell">
+{{ content | safe }}
+  </main>
+
+  <footer class="site-footer shell">
+    <a class="footer-brand" href="{{ home }}">{{ t.brand.name }} <span>{{ t.brand.tag }}</span></a>
+    <p>{{ t.footer.tagline }}</p>
+    <p><a href="{{ home }}">{{ t.footer.backHome }}</a></p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+name: Build and deploy
+
+# Builds the site with Eleventy, publishes it to GitHub Pages, then tells
+# search engines (IndexNow) about the pages whose HTML changed.
+# Repo setting required: Settings → Pages → Source = "GitHub Actions".
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # Compare each built page with what is live now, before deploying, so
+      # IndexNow is only sent pages that actually changed.
+      - name: Find changed pages
+        run: python3 .github/scripts/changed_pages.py _site https://camr.sa > changed-pages.txt
+
+      - name: Show changed pages
+        run: cat changed-pages.txt
+
+      - name: Keep changed-page list for IndexNow
+        uses: actions/upload-artifact@v4
+        with:
+          name: changed-pages
+          path: changed-pages.txt
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  indexnow:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get changed-page list
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-pages
+
+      - name: Submit changed pages to IndexNow
+        run: python3 .github/scripts/indexnow_submit.py
+        env:
+          INDEXNOW_HOST: camr.sa
+          INDEXNOW_KEY_FILE: ${{ github.workspace }}/src/f66437307ab5d328f718931a6b695487.txt
+          INDEXNOW_PATHS_FILE: changed-pages.txt
