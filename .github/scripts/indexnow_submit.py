@@ -2,10 +2,9 @@
 """Submit changed HTML pages to the IndexNow API.
 
 Uses only the Python standard library. Reads the IndexNow key from the
-key file in the repository (public by design), reads the list of changed
-built pages written by changed_pages.py (INDEXNOW_PATHS_FILE, one
-site-relative path per line), maps them to production URLs, and POSTs
-them to https://api.indexnow.org/indexnow.
+key file in the repository (public by design), detects changed HTML
+files via git, maps them to production URLs, and POSTs them to
+https://api.indexnow.org/indexnow.
 
 Exit codes:
   0  submission accepted (HTTP 200/202) or nothing to submit
@@ -52,6 +51,27 @@ def read_key(key_file):
     return key
 
 
+def git_diff_names(before, after):
+    import subprocess
+
+    result = subprocess.run(
+        ["git", "diff", "--name-status", "--no-renames", before + ".." + after],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    status_by_path = {}
+    for line in result.stdout.splitlines():
+        parts = line.split("\t")
+        if len(parts) < 2:
+            continue
+        status, path = parts[0], parts[-1]
+        if path in status_by_path and status[0] != "D":
+            continue
+        status_by_path[path] = status
+    return status_by_path
+
+
 NON_INDEXABLE_HTML = {"404.html", "404.htm"}
 
 
@@ -65,6 +85,15 @@ def changed_html_paths(status_by_path):
                 continue
             html_paths.append(path)
     return html_paths
+
+
+def is_bootstrap_file(path, key, workflow_file):
+    return (
+        path == key + ".txt"
+        or path == workflow_file
+        or path == ".github/scripts/indexnow_submit.py"
+        or path.startswith(".github/")
+    )
 
 
 def path_to_url_path(path):
@@ -141,22 +170,44 @@ def submit_chunk(host, key, key_location, urls):
 def main():
     host = get_env("INDEXNOW_HOST")
     key_file = get_env("INDEXNOW_KEY_FILE")
-    paths_file = get_env("INDEXNOW_PATHS_FILE")
+    event_name = get_env("INDEXNOW_EVENT_NAME")
+    sha = get_env("INDEXNOW_SHA")
+    before = os.environ.get("INDEXNOW_EVENT_BEFORE", "")
+    workflow_file = get_env("INDEXNOW_WORKFLOW_FILE")
 
     key = read_key(key_file)
     key_location = "https://%s/%s.txt" % (host, key)
     print("IndexNow key location: " + key_location)
 
-    try:
-        with open(paths_file, "r", encoding="utf-8") as handle:
-            listed = [line.strip() for line in handle if line.strip()]
-    except OSError as error:
-        fail("Cannot read changed-page list %s: %s" % (paths_file, error))
-    paths = changed_html_paths({path: "M" for path in listed})
-    if not paths:
-        print("No changed pages; nothing to submit.")
-        return
-    print("Changed pages: " + ", ".join(sorted(paths)))
+    paths = []
+    if event_name == "push" and before and before.strip():
+        status_by_path = git_diff_names(before.strip(), sha)
+        html_paths = changed_html_paths(status_by_path)
+        if html_paths:
+            paths = html_paths
+            print("Changed HTML files: " + ", ".join(sorted(html_paths)))
+        else:
+            bootstrap = [
+                p
+                for p in status_by_path
+                if is_bootstrap_file(p, key, workflow_file)
+                and not status_by_path[p].startswith("D")
+            ]
+            if bootstrap:
+                print(
+                    "No HTML changes; bootstrap push detected "
+                    "(IndexNow files introduced), submitting homepage."
+                )
+                paths = ["index.html"]
+            else:
+                print("No HTML changes detected; nothing to submit.")
+                return
+    else:
+        if event_name != "workflow_dispatch":
+            print("Unsupported event '%s'; nothing to submit." % event_name)
+            return
+        print("Manual dispatch: submitting homepage.")
+        paths = ["index.html"]
 
     urls = build_urls(host, paths)
     print("Submitted %d URL(s):" % len(urls))
